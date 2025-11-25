@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import DashboardPage from "./pages/DashboardPage"; 
 import SigninPage from "./pages/SigninPage";
-import { useAuthContext } from "./context/AuthContext";
+import { useAuthContext } from "./context/authContext";
 
 
 

@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { ChatIcon, CollapseIcon, ExpandIcon, LogoutIcon, SettingIcon } from "../icons/menuBarIcons";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../store/Profile/userSlice";
-import { useAuthContext } from "../../../context/AuthContext";
+import { useAuthContext } from "../../../context/authContext";
 import { useState } from "react";
 type CollapseButtonProps = {
   collapsed: boolean;

@@ -6,7 +6,7 @@ import { LOCAL_URL, MESSAGE_API } from "../../utils/constants";
 
 export const fetchMessages = createAsyncThunk(
   "messages/fetchMessages",
-async (userId: string, { rejectWithValue }) => {
+async (userId: number, { rejectWithValue }) => {
     try {
       const response = await fetch(`${LOCAL_URL}${MESSAGE_API}${userId}`, {
         method: "GET",

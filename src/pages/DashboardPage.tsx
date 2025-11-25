@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import MenuBar from "../components/layout/menubar/MenuBar";
 import MessageContainer from "../components/layout/messageContainer/MessageContainer";
 import SideBar from "../components/layout/sidebar/SideBar";
-import { useAuthContext } from "../context/AuthContext";
+import { useAuthContext } from "../context/authContext";
 
 const DashboardPage: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);

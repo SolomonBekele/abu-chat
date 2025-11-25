@@ -1,6 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import type { RootState } from "../../../store";
 
 const MessageHeader: React.FC = () => {
+  const {selectedConversation} = useSelector(
+      (state: RootState) => state.conversations
+    );
   return (
     <div className="h-16 bg-white border-b border-gray-200 px-4 md:px-6 flex items-center justify-between">
       <div className="flex items-center gap-3">
@@ -11,12 +16,12 @@ const MessageHeader: React.FC = () => {
           <img
             data-slot="avatar-image"
             className="aspect-square w-full h-full"
-            alt="Bob Smith"
-            src="https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=100&h=100&fit=crop"
+            alt={selectedConversation?.name}
+            src={selectedConversation?.avatar}
           />
         </span>
         <div>
-          <h3 className="text-gray-900">Bob Smith</h3>
+          <h3 className="text-gray-900">{selectedConversation?.name}</h3>
           <p className="text-sm text-gray-500">online</p>
         </div>
       </div>

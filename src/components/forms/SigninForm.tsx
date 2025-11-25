@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 // import type { RootState, AppDispatch } from "../redux/store";
 import { loginUser } from '../../store/Profile/userThunk';
 import type { AppDispatch,RootState } from '../../store';
-import { useAuthContext } from '../../context/AuthContext';
+import { useAuthContext } from '../../context/authContext';
 
 
 
@@ -19,8 +19,8 @@ const SigninForm: React.FC = () => {
     (state: RootState) => state.user
   );
 
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string>("solubman28@gmail.com");
+  const [password, setPassword] = useState<string>("password");
 
   // Navigate and show toast on successful login
   useEffect(() => {

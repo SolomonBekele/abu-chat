@@ -3,12 +3,16 @@ import React, { useEffect } from 'react'
 import MessageInput from './MessageInput'
 import { TiMessages } from "react-icons/ti";
 // import useConversation from '../../zustand/useConversation';
-import { useAuthContext } from '../../../context/AuthContext';
+import { useAuthContext } from '../../../context/authContext';
 import MessageHeader from './MessageHeader';
 import Messages from './Messages';
+import type { RootState } from "../../../store";
+import { useSelector } from "react-redux";
 
 const MessageContainer = () => {
-    // const {selectedConversation ,setSelectedConversation} = useConversation();
+   const { selectedConversation } = useSelector(
+    (state: RootState) => state.conversations
+  );
 
     // useEffect(()=>{
     //     // clean function (unmounts)
@@ -16,25 +20,26 @@ const MessageContainer = () => {
     // },[setSelectedConversation]); 
 
   return (
-    // <div className="md:min-w-[450px] flex flex-col">
-    //     {!selectedConversation?(
-    //         <NoChatSelected/>
-    //     ):
-    //     (
+    <div className="flex flex-col w-full relative bg-gray-50">
+       { selectedConversation=== null ?(
+            <NoChatSelected/> 
+        ):
+        (
 
-        <div className='w-full relative'> 
+        <div className=''> 
         {/* header */}
     <MessageHeader/>
-    {/* <Messages/> */}
+    <Messages userId={selectedConversation.id}/>
     
   
     {/* <Messages/> */}
     <MessageInput/>
     </div>
         )}
-    // </div>
-//   )
-// }
+        </div>
+        )
+    }
+
 
 export default MessageContainer
 
@@ -44,9 +49,9 @@ const NoChatSelected = () => {
     
 	return (
 		<div className='flex items-center justify-center w-full h-full'>
-			<div className='px-4 text-center sm:text-lg md:text-xl text-gray-200 font-semibold flex flex-col items-center gap-2'>
+			<div className='px-4 text-center sm:text-lg md:text-xl text-gray-500 font-semibold flex flex-col items-center gap-2'>
 				<p>{`Welcome 👋 ${authUser.fullName} ❄`}</p>
-				<p>Select a chat to start messaging</p>
+				<p>Select a conversation to start messaging</p>
 				<TiMessages className='text-3xl md:text-6xl text-center' />
 			</div>
 		</div>

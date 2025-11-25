@@ -1,8 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type {  PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { fetchConversations } from "./conversationThunk";
 
-// Conversation interface
 export interface Conversation {
   id: number;
   name: string;
@@ -15,18 +13,24 @@ export interface Conversation {
 interface ConversationsState {
   conversations: Conversation[];
   status: "idle" | "loading" | "failed";
+  selectedConversation: Conversation | null;
   error?: string;
 }
 
 const initialState: ConversationsState = {
   conversations: [],
   status: "idle",
+  selectedConversation: null,
 };
 
 const conversationsSlice = createSlice({
   name: "conversations",
   initialState,
-  reducers: {},
+  reducers: {
+    setSelectedConversation: (state, action: PayloadAction<Conversation>) => {
+      state.selectedConversation = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchConversations.pending, (state) => {
@@ -43,4 +47,5 @@ const conversationsSlice = createSlice({
   },
 });
 
+export const { setSelectedConversation } = conversationsSlice.actions;
 export default conversationsSlice.reducer;

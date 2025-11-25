@@ -5,7 +5,7 @@ import type { RootState } from "../../../store";
 import { useSelector } from "react-redux";
 
 interface MessagesProps {
-  userId: string; // Pass the selected user ID as prop
+  userId: number; // Pass the selected user ID as prop
 }
 
 const Messages: React.FC<MessagesProps> = ({ userId }) => {
@@ -26,7 +26,7 @@ const Messages: React.FC<MessagesProps> = ({ userId }) => {
     <div className="px-4 flex-1 overflow-auto">
       {!loading && userMessages.length > 0 &&
         userMessages.map((message) => (
-          <div key={message.id} ref={lastMessageRef}>
+          <div key={message.id} ref={lastMessageRef} className="mb-2">
             <Message key={message.id} {...message} />
           </div>
         ))}
@@ -34,7 +34,7 @@ const Messages: React.FC<MessagesProps> = ({ userId }) => {
       {loading && [...Array(3)].map((_, idx) => <MessageShimmer key={idx} />)}
 
       {!loading && userMessages.length === 0 && (
-        <p className="text-center text-gray-400">
+        <p className=" text-gray-400 flex justify-center ">
           Send a message to start a conversation
         </p>
       )}

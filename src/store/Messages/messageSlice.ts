@@ -5,7 +5,7 @@ import { fetchMessages } from "./messageApi";
 
 // Message Interface
 export interface Message {
-  id: string;
+  id: number;
   senderId: number;
   receiverId: number;
   seenBy: string[];
@@ -31,7 +31,7 @@ const messagesSlice = createSlice({
   reducers: {
     addMessage: (
       state,
-      action: PayloadAction<{ userId: string; message: Message }>
+      action: PayloadAction<{ userId: number; message: Message }>
     ) => {
       const { userId, message } = action.payload;
       if (!state.messages[userId]) {

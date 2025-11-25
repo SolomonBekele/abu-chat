@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { useSelector } from 'react-redux';
+import type { RootState } from "../../../store";
+import { LOCAL_URL, MESSAGE_API } from "../../../utils/constants";
 
 interface MessageInputProps {
   onSend?: (message: string) => void;
@@ -6,8 +9,12 @@ interface MessageInputProps {
 
 const MessageInput: React.FC<MessageInputProps> = ({ onSend }) => {
   const [message, setMessage] = useState("");
+  const {selectedConversation} = useSelector((state:RootState)=> state.conversations)
+ const id = selectedConversation?.id
+
 
   const handleSend = () => {
+    sendMessage(message,id);
     if (!message.trim()) return;
     onSend?.(message);
     setMessage("");
@@ -17,38 +24,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend }) => {
     <div className="bg-white border-t border-gray-200 p-4 absolute bottom-0 w-full">
       <div className="space-y-2">
         <div className="flex items-center gap-1 md:gap-2">
-          {/* Left buttons */}
-          <div className="hidden sm:flex gap-1">
-            <button className="size-9 rounded-md text-gray-500 hover:text-gray-700 flex items-center justify-center">
-              {/* Smile Icon */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-                <line x1="9" y1="9" x2="9.01" y2="9" />
-                <line x1="15" y1="9" x2="15.01" y2="9" />
-              </svg>
-            </button>
-
-            <button className="size-9 rounded-md text-gray-500 hover:text-gray-700 flex items-center justify-center">
-              {/* Paperclip Icon */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551" />
-              </svg>
-            </button>
-          </div>
-
           {/* TEXTAREA */}
           <div className="flex-1 relative">
             <textarea
@@ -65,7 +40,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend }) => {
                 {/* Mic Icon */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6" // ← FULL SIZE
+                  className="w-6 h-6" 
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -80,7 +55,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend }) => {
                 {/* Video Icon */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6" // ← FULL SIZE
+                  className="w-6 h-6" 
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -117,3 +92,23 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend }) => {
 };
 
 export default MessageInput;
+    const sendMessage = async (message:string,id:number | undefined) => {
+        try {
+          const token = localStorage.getItem("user-token");
+    
+        await fetch(`${LOCAL_URL}${MESSAGE_API}send/${id}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              ...(token && { Authorization: `Bearer ${token}` }),
+            },
+            body:JSON.stringify({message:message})
+            }
+          );
+    
+        } catch (error) {
+          console.error("Error sending message:", error);
+        }
+
+      };
+
