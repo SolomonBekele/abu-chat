@@ -4,7 +4,7 @@ import {
   CollapseButton,
   LogoutButton,
   SettingButton,
-} from "../ui/Button/sideBarButtons";
+} from "../../ui/Button/sideBarButtons";
 
 type MenuBarProps = {
   collapsed: boolean;

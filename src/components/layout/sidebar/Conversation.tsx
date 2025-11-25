@@ -1,5 +1,8 @@
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../../store";
+import { fetchMessages } from "../../../store/Messages/messageApi";
 interface ConversationProps {
-  id: number;
+  id: string;
   name: string;
   avatar: string;
   lastMessage: string;
@@ -15,8 +18,13 @@ export const Conversation = ({
   timeAgo,
   unreadCount,
 }: ConversationProps) => {
+ const dispatch = useDispatch<AppDispatch>();
+ const handleAddMessages = (userId: string) => {
+  dispatch(fetchMessages(userId));
+};
   return (
-    <button className="w-full p-3 rounded-lg text-left hover:bg-gray-50 transition-colors flex items-start gap-3">
+    <button className="w-full p-3 rounded-lg text-left hover:bg-gray-50 transition-colors flex items-start gap-3"
+    onClick={() => handleAddMessages(id)}>
       {/* Avatar */}
       <span
         data-slot="avatar"

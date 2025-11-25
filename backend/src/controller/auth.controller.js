@@ -34,7 +34,7 @@ export const signup = async (req, res) => {
         if (newUser) {
 
             // Generate jwt token
-            generateTokenAndsetCookie(newUser._id,res)
+            generateAccessToken(newUser._id)
 
             await newUser.save();
 
@@ -60,9 +60,9 @@ export const login = async (req, res) => {
     try {
         const {email,password}=req.body
         const username = email;
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ username })
         const isPassWordCorrect = await bcrypt.compare(password,user?.password || "")
-        
+      
         if(!user || !isPassWordCorrect){
             return res.status(400).json({ error: "Username or password not correct" }) 
             }

@@ -71,3 +71,17 @@ export default defineConfig([
   },
 ])
 ```
+
+
+useEffect(() => {
+  if (currentChatId) {
+    conversations.forEach((msg) => {
+      fetch(`/api/messages/${msg.id}/seen`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    });
+  }
+}, [currentChatId]);

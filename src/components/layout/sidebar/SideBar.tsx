@@ -1,6 +1,7 @@
 import React from "react";
 import Conversations from "./Conversations";
-import Setting from "./Setting";
+import Setting from "../menubar/Setting";
+
 
 type ChatSettingProps = {
   activeTab: "chat" | "settings";

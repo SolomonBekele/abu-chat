@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { Conversation } from "./conversationSlice";
 import { LOCAL_URL, USER_API } from "../../utils/constants";
 
+
 // Fetch all conversations
 export const fetchConversations = createAsyncThunk<Conversation[]>(
   "conversations/fetchAll",

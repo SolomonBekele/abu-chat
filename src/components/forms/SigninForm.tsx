@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { EMAIL as mockEmail, PASSWORD as mockPassword } from '../../utils/constants'
 import {  useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from "react-redux";

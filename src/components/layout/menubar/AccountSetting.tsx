@@ -1,7 +1,7 @@
 import React from "react";
-import { CameraIcon } from "../ui/icons/sideBarIcons";
+import { CameraIcon } from "../../ui/icons/sideBarIcons";
 import { useSelector } from "react-redux";
-import type { RootState } from "../../store";
+import type { RootState } from "../../../store";
 
 
 const AccountSetting: React.FC = () => {

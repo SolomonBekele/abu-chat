@@ -1,44 +1,61 @@
 import User from "../models/user.model.js";
+import { countUnseenMessages, getLastMessage } from "./message.controller.js";
 
 export const getUsersForSidebar = async (req, res) => {
   try {
     const loggedInUserId = req.user._id;
-    const greetings = [
-      "Hello!",
-      "Hi there!",
-      "Hey!",
-      "Good morning!",
-      "Good afternoon!",
-      "Good evening!",
-      "How are you?",
-      "Hi! Nice to see you!",
-      "Hello! How's it going?",
-    ];
+    
 
-    const timeAgo = [
-      "1min",
-      "2min",
-      "5min",
-      "10min",
-      "15min",
-      "30min",
-      "45min",
-      "1h",
-      "2h",
-    ];
+
+    function formatTimeAgo(date) {
+      const ms = Date.now() - new Date(date).getTime();
+
+      const minutes = Math.floor(ms / (1000 * 60));
+      const hours = Math.floor(ms / (1000 * 60 * 60));
+      const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+      const weeks = Math.floor(days / 7);
+      const months = Math.floor(days / 30);
+      const years = Math.floor(days / 365);
+
+      if (minutes < 1) return `just now`;
+      if (minutes < 60) return `${minutes} min`;
+      if (hours < 24) return `${hours} hr`;
+      if (days < 7) return `${days} day`;
+      if (weeks < 4) return `${weeks} week`;
+      if (months < 12) return `${months} month`;
+      return `${years} year`;
+    }
 
     const filteredUsers = await User.find({
       _id: { $ne: loggedInUserId },
     }).select("-password");
 
-    const users = filteredUsers.map((user, index) => ({
+    let users = await Promise.all(
+  filteredUsers.map(async (user) => {
+    const lastMessage = await getLastMessage(loggedInUserId, user._id);
+    const unseenMessagesAmount = await countUnseenMessages(loggedInUserId, user._id);
+
+    return {
       id: user._id,
       name: user.fullName,
       avatar: user.profilePic,
-      lastMessage: greetings[index % greetings.length], // use modulo in case there are more users than greetings
-      timeAgo: timeAgo[index % timeAgo.length], // use modulo for same reason
-      unreadCount: 1,
-    }));
+      lastMessage: lastMessage?.message || "",
+      timeAgo: lastMessage ? formatTimeAgo(lastMessage.createdAt) : "",
+      lastMessageTime: lastMessage ? new Date(lastMessage.createdAt) : null,
+      unreadCount: unseenMessagesAmount,
+    };
+  })
+);
+
+// sort by latest message time
+users.sort((a, b) => {
+  if (!a.lastMessageTime && !b.lastMessageTime) return 0;
+  if (!a.lastMessageTime) return 1;
+  if (!b.lastMessageTime) return -1;
+  return b.lastMessageTime - a.lastMessageTime;
+});
+
+
 
     res.status(200).json(users);
   } catch (error) {

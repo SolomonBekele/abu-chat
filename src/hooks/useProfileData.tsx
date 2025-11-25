@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { LOCAL_URL, USER_API } from "../utils/constants";
 
+
 interface UserData {
   id: string;
   fullName: string;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import MenuBar from "../components/layout/MenuBar";
-import MessageContainer from "../components/layout/MessageContainer";
-import SideBar from "../components/layout/SideBar";
+import MenuBar from "../components/layout/menubar/MenuBar";
+import MessageContainer from "../components/layout/messageContainer/MessageContainer";
+import SideBar from "../components/layout/sidebar/SideBar";
 import { useAuthContext } from "../context/AuthContext";
 
 const DashboardPage: React.FC = () => {

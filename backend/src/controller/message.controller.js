@@ -69,3 +69,75 @@ export const getMessages = async (req,res) =>{
         res.status(500).json({ error: error.message })
     }
 }
+export const getLastMessage = async (userToChatId,senderId) => {
+  try {
+    const conversation = await Conversation.findOne({
+      participants: { $all: [senderId, userToChatId] },
+    });
+
+    if (!conversation) return null;
+
+    // Fetch only the LAST message
+    const lastMessage = await Message.findOne({
+      _id: { $in: conversation.messages },
+    })
+      .sort({ createdAt: -1 })
+      .limit(1);
+    return lastMessage;
+  } catch (error) {
+    console.log("Error in getLastMessage controller", error.message);
+  }
+};
+export const markMessageAsSeen = async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    const userId = req.user._id;
+
+    const message = await Message.findById(messageId);
+
+    if (!message) return res.status(404).json({ error: "Message not found" });
+
+    // Add user to seenBy only if not already seen
+    if (!message.seenBy.includes(userId)) {
+      message.seenBy.push(userId);
+      await message.save();
+    }
+
+    return res.status(200).json(message);
+  } catch (error) {
+    console.error("Error marking message as seen:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export async function countUnseenMessages(loggedInUserId, userId) {
+  const conversation = await Conversation.findOne({
+    participants: { $all: [loggedInUserId, userId] },
+  }).populate({
+    path: "messages",
+    populate: {
+      path: "seenBy",
+      model: "User",
+    },
+  });
+
+  if (!conversation) return 0;
+
+  const unseenCount = conversation.messages.filter((msg) => {
+    // sender is the other user
+    const isFromUser = msg.senderId.toString() === userId.toString();
+
+    // sent to logged-in user
+    const isToLoggedInUser = msg.receiverId.toString() === loggedInUserId.toString();
+
+    // loggedInUser *not* in seenBy array
+    const notSeen = !msg.seenBy.some(
+      (user) => user._id.toString() === loggedInUserId.toString()
+    );
+
+    return isFromUser && isToLoggedInUser && notSeen;
+  }).length;
+
+  return unseenCount;
+}
+
