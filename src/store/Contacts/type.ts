@@ -13,6 +13,7 @@ export interface Contact {
   lastMessage: string;
   timeAgo: string;
   unreadCount: number;
+  last_seen: string
 }
 
 export interface ContactsState {

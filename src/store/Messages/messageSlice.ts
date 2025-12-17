@@ -19,16 +19,18 @@ const messagesSlice = createSlice({
   name: "messages",
   initialState,
   reducers: {
-    addMessage: (
-      state,
-      action: PayloadAction<{ conversation_id: number; message: Message }>
-    ) => {
+    addMessage: (state,action: PayloadAction<{ conversation_id: number; message: Message }>) => {
       const { conversation_id, message } = action.payload;
       if (!state.data[conversation_id]) {
         state.data[conversation_id] = [];
       }
       state.data[conversation_id].push(message);
     },
+    resetMessages(state) {
+          state.data = {};
+          state.message = "";
+          state.loading = false;
+        },
   },
 
   extraReducers: (builder) => {
@@ -51,5 +53,5 @@ const messagesSlice = createSlice({
   },
 });
 
-export const { addMessage } = messagesSlice.actions;
+export const { addMessage,resetMessages } = messagesSlice.actions;
 export default messagesSlice.reducer;

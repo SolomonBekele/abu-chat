@@ -8,7 +8,7 @@ export const fetchConversations = createAsyncThunk<Conversations[]>(
   "conversationsList/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BASE_URL}${VERSION}${CHAT_API}/conversation`, {
+      const response = await fetch(`${BASE_URL}${VERSION}${CHAT_API}/conversation/all`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

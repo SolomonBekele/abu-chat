@@ -13,7 +13,7 @@ const MessageContainer = () => {
    const { selectedConversation } = useSelector(
     (state: RootState) => state.conversations
   );
-  console.log(selectedConversation);
+
 
     // useEffect(()=>{
     //     // clean function (unmounts)
@@ -30,7 +30,7 @@ const MessageContainer = () => {
         <div className=''> 
         {/* header */}
     <MessageHeader/>
-    <Messages conversationId={selectedConversation.conversationInfo._id}/>
+    <Messages conversationId={selectedConversation?.conversationInfo?._id}/>
     
   
     {/* <Messages/> */}

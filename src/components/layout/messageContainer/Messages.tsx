@@ -5,7 +5,7 @@ import type { RootState } from "../../../store";
 import { useSelector } from "react-redux";
 
 interface MessagesProps {
-  conversationId: string; // Pass the selected user ID as prop
+  conversationId: string ; // Pass the selected user ID as prop
 }
 
 const Messages: React.FC<MessagesProps> = ({ conversationId }) => {
@@ -20,7 +20,7 @@ const Messages: React.FC<MessagesProps> = ({ conversationId }) => {
     lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [data[conversationId]]);
   const userMessages = data[conversationId] || [];
-  console.log(userMessages);
+ 
   return (
     <div className="px-4 flex-1 overflow-auto">
       {!loading && userMessages.length > 0 &&

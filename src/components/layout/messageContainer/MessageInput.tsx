@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from 'react-redux';
 import type { RootState } from "../../../store";
-import { BASE_URL, MESSAGE_API } from "../../../utils/constants";
+import { BASE_URL, CHAT_API, MESSAGE_API, VERSION } from "../../../utils/constants";
 
 interface MessageInputProps {
   onSend?: (message: string) => void;
@@ -10,11 +10,14 @@ interface MessageInputProps {
 const MessageInput: React.FC<MessageInputProps> = ({ onSend }) => {
   const [message, setMessage] = useState("");
   const {selectedConversation} = useSelector((state:RootState)=> state.conversations)
- const id = selectedConversation?.id
+ const conversationId = selectedConversation?.conversationInfo?._id;
+ const receiverId = selectedConversation?.peerUser?.user_id;
+ const type = "text";
+
 
 
   const handleSend = () => {
-    sendMessage(message,id);
+    sendMessage(conversationId,receiverId,message,type);
     if (!message.trim()) return;
     onSend?.(message);
     setMessage("");
@@ -92,17 +95,17 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend }) => {
 };
 
 export default MessageInput;
-    const sendMessage = async (message:string,id:number | undefined) => {
+const sendMessage = async (conversationId:string | undefined,receiverId:string | undefined ,content:string,type:string|undefined) => {
         try {
           const token = localStorage.getItem("user-token");
     
-        await fetch(`${BASE_URL}${MESSAGE_API}send/${id}`, {
+        await fetch(`${BASE_URL}${VERSION}${CHAT_API}/message`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               ...(token && { Authorization: `Bearer ${token}` }),
             },
-            body:JSON.stringify({message:message})
+            body:JSON.stringify({conversationId:conversationId,receiverId:receiverId,content:content,type:type})
             }
           );
     

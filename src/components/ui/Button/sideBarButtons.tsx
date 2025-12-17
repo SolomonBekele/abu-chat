@@ -7,6 +7,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { resetConversation } from "../../../store/Conversations/conversationSlice";
 import { resetContact } from "../../../store/Contacts/contactSlice";
+import { resetMessages } from "../../../store/Messages/messageSlice";
 type CollapseButtonProps = {
   collapsed: boolean;
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
@@ -72,6 +73,7 @@ export const LogoutButton = ({ collapsed }:CollapseProps) => {
     dispatch(logout());
     dispatch(resetConversation());
     dispatch(resetContact());
+    dispatch(resetMessages())
     setAuthUser(null)
     toast.success("logged out successfully");
   };
