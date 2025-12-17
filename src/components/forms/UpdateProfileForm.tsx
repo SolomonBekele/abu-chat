@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { AppDispatch, RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUser } from "../../store/Profile/userThunk";
+import { updateUserProfile } from "../../store/Profile/userThunk";
 import toast from "react-hot-toast";
 import { useAuthContext } from "../../context/authContext";
 import { resetUpdate } from "../../store/Profile/userSlice";
@@ -11,7 +11,7 @@ const UpdateProfileForm = () => {
   const dispatch: AppDispatch = useDispatch();
 
   // 🔥 Separated slice structure:
-  const { userData, update } = useSelector((state: RootState) => state.user);
+  const { userData, updateUser } = useSelector((state: RootState) => state.user);
 
   const [email, setEmail] = useState<string>(userData?.email ?? "");
   const [fullName, setFullName] = useState<string>(userData?.name ?? "");
@@ -24,26 +24,25 @@ const UpdateProfileForm = () => {
 
   useEffect(() => {
     // console.log(update.isUpdated,update.message, userData);
-    if (update.isUpdated && userData) {
-      toast.success(update.message || "Updated successfully");
+    if (updateUser.isUpdated && userData) {
+      toast.success(updateUser.message || "Updated successfully");
       setAuthUser(userData);
       // reset update state
     dispatch(resetUpdate());
     }
-  }, [update.isUpdated, userData]);
+  }, [updateUser.isUpdated, userData]);
 
  
   useEffect(() => {
-    if (update.error) {
-      toast.error(update.error);
+    if (updateUser.error) {
+      toast.error(updateUser.error);
     }
-  }, [update.error]);
+  }, [updateUser.error]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(status);
     dispatch(
-      updateUser({
+      updateUserProfile({
         fullName,
         phoneNumber,
         status,
@@ -124,10 +123,10 @@ const UpdateProfileForm = () => {
       {/* --- SUBMIT BUTTON --- */}
       <button
         type="submit"
-        disabled={update.loading}
+        disabled={updateUser.loading}
         className="h-9 px-4 py-2 w-full rounded-md bg-teal-500 hover:bg-teal-600 text-white font-medium"
       >
-        {update.loading ? "Saving..." : "Save Changes"}
+        {updateUser.loading ? "Saving..." : "Save Changes"}
       </button>
     </form>
   );

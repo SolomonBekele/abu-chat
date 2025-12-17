@@ -2,6 +2,7 @@ import React from "react";
 import {
   ChatButton,
   CollapseButton,
+  ContactButton,
   LogoutButton,
   SettingButton,
 } from "../../ui/Button/sideBarButtons";
@@ -9,8 +10,8 @@ import {
 type MenuBarProps = {
   collapsed: boolean;
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
-  activeTab: "chat" | "settings";
-  setActiveTab: React.Dispatch<React.SetStateAction<"chat" | "settings">>;
+  activeTab: "conversations" | "settings" | "contacts";
+  setActiveTab: React.Dispatch<React.SetStateAction<"conversations" | "settings" | "contacts">>;
 };
 
 const MenuBar: React.FC<MenuBarProps> = ({
@@ -36,8 +37,13 @@ const MenuBar: React.FC<MenuBarProps> = ({
       <div className="flex-1 p-2 flex flex-col gap-2">
         <ChatButton
           collapsed={collapsed}
-          active={activeTab === "chat"}
-          onClick={() => setActiveTab("chat")}
+          active={activeTab === "conversations"}
+          onClick={() => setActiveTab("conversations")}
+        />
+        <ContactButton
+          collapsed={collapsed}
+          active={activeTab === "contacts"}
+          onClick={() => setActiveTab("contacts")}
         />
         <SettingButton
           collapsed={collapsed}

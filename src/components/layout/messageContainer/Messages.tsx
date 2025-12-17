@@ -5,29 +5,28 @@ import type { RootState } from "../../../store";
 import { useSelector } from "react-redux";
 
 interface MessagesProps {
-  userId: number; // Pass the selected user ID as prop
+  conversationId: string; // Pass the selected user ID as prop
 }
 
-const Messages: React.FC<MessagesProps> = ({ userId }) => {
-  const { messages, loading, error } = useSelector(
+const Messages: React.FC<MessagesProps> = ({ conversationId }) => {
+
+  const { data, loading, error } = useSelector(
     (state: RootState) => state.messages
   );
-
   const lastMessageRef = useRef<HTMLDivElement>(null);
 
   // Scroll to last message when messages change
   useEffect(() => {
     lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages[userId]]);
-
-  const userMessages = messages[userId] || [];
-
+  }, [data[conversationId]]);
+  const userMessages = data[conversationId] || [];
+  console.log(userMessages);
   return (
     <div className="px-4 flex-1 overflow-auto">
       {!loading && userMessages.length > 0 &&
         userMessages.map((message) => (
-          <div key={message.id} ref={lastMessageRef} className="mb-2">
-            <Message key={message.id} {...message} />
+          <div key={message._id} ref={lastMessageRef} className="mb-2">
+            <Message key={message._id} {...message} />
           </div>
         ))}
 

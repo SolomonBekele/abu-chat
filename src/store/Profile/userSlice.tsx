@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUser, updateUser, updateProfilePic } from "./userThunk";
+import { loginUser, updateUserProfile, updateProfilePic } from "./userThunk";
 import type { UserData } from "./type";
 
 interface AsyncState {
@@ -26,7 +26,7 @@ const initialState: UserState = {
 };
 
 const userSlice = createSlice({
-  name: "user",
+  name: "users",
   initialState,
   reducers: {
     logout(state) {
@@ -64,19 +64,19 @@ const userSlice = createSlice({
 
     /** ------------------- UPDATE USER ------------------- */
     builder
-      .addCase(updateUser.pending, (state) => {
+      .addCase(updateUserProfile.pending, (state) => {
         state.updateUser.loading = true;
         state.updateUser.error = null;
         state.updateUser.message = "Updating...";
         state.updateUser.isUpdated = false;
       })
-      .addCase(updateUser.fulfilled, (state, action) => {
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.updateUser.loading = false;
         state.updateUser.isUpdated = true;
         state.updateUser.message = action.payload.message;
         state.userData = action.payload.user;
       })
-      .addCase(updateUser.rejected, (state, action) => {
+      .addCase(updateUserProfile.rejected, (state, action) => {
         state.updateUser.loading = false;
         state.updateUser.error = (action.payload as any)?.message || "Update failed";
         state.updateUser.message = null;

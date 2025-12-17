@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { CameraIcon } from "../../ui/icons/sideBarIcons";
+import { CameraIcon } from "../../../ui/icons/sideBarIcons";
 import { useSelector } from "react-redux";
-import type { RootState } from "../../../store";
-import UpdateProfileForm from "../../forms/UpdateProfileForm";
-import { BASE_URL, USER_PROFILE_API, VERSION } from "../../../utils/constants";
-import UploadProfilePicButton from "../../ui/Button/uploadProfilePicButton";
+import type { RootState } from "../../../../store";
+import UpdateProfileForm from "../../../forms/UpdateProfileForm";
+import { BASE_URL, USER_PROFILE_API, VERSION } from "../../../../utils/constants";
+import UploadProfilePicButton from "../../../ui/Button/uploadProfilePicButton";
 
 const AccountSetting: React.FC = () => {
-  const { userData,updateProfile } = useSelector((state: RootState) => state.user);
+  const { userData,updateProfilePic } = useSelector((state: RootState) => state.user);
   const [profilePic, setProfilePic] = useState<string>(userData?.profile_picture ?? "" );
   const [imageUrl,setImageUrl] = useState<string>("")
   useEffect(() => {
@@ -30,7 +30,7 @@ const AccountSetting: React.FC = () => {
   };
 
   fetchProfilePic();
-}, [userData?.profile_picture, updateProfile.isUpdated]); 
+}, [userData?.profile_picture, updateProfilePic.isUpdated]); 
 
 
   return (

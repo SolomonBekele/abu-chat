@@ -13,6 +13,7 @@ const MessageContainer = () => {
    const { selectedConversation } = useSelector(
     (state: RootState) => state.conversations
   );
+  console.log(selectedConversation);
 
     // useEffect(()=>{
     //     // clean function (unmounts)
@@ -21,7 +22,7 @@ const MessageContainer = () => {
 
   return (
     <div className="flex flex-col w-full relative bg-gray-50">
-       { selectedConversation=== null ?(
+       { selectedConversation === null ?(
             <NoChatSelected/> 
         ):
         (
@@ -29,7 +30,7 @@ const MessageContainer = () => {
         <div className=''> 
         {/* header */}
     <MessageHeader/>
-    <Messages userId={selectedConversation.id}/>
+    <Messages conversationId={selectedConversation.conversationInfo._id}/>
     
   
     {/* <Messages/> */}

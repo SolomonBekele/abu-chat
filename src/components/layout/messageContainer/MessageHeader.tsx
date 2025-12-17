@@ -16,12 +16,12 @@ const MessageHeader: React.FC = () => {
           <img
             data-slot="avatar-image"
             className="aspect-square w-full h-full"
-            alt={selectedConversation?.name}
-            src={selectedConversation?.avatar}
+            alt={selectedConversation?.peerUser.name}
+            src={selectedConversation?.peerUser.profile_pic}
           />
         </span>
         <div>
-          <h3 className="text-gray-900">{selectedConversation?.name}</h3>
+          <h3 className="text-gray-900">{selectedConversation?.peerUser.name}</h3>
           <p className="text-sm text-gray-500">online</p>
         </div>
       </div>

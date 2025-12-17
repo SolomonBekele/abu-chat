@@ -11,7 +11,7 @@ export const conversationsFilter = createFilter(
 
  
 export const userPersistConfig = {
-  key: "user",
+  key: "users",
   storage: localForage,
 };
  
@@ -19,6 +19,10 @@ export const conversationsPersistConfig = {
   key: "conversations",
   storage: localForage,
   transforms: [conversationsFilter],
+};
+export const contactsPersistConfig = {
+  key: "contacts",
+  storage: localForage,
 };
  
 // export const messagesPersistConfig = {

@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import { SearchBarInput } from "../../ui/Input/UsersBarInput";
+import { SearchBarInput } from "../../../ui/Input/UsersBarInput";
 import { Conversation } from "./Conversation";
-import UserButtonShimmer from "../Skeleton/Shimmer";
-import type { AppDispatch, RootState } from "../../../store";
+import UserButtonShimmer from "../../Skeleton/Shimmer";
+import type { AppDispatch, RootState } from "../../../../store";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchConversations } from "../../../store/Conversations/conversationThunk";
+import { fetchConversations } from "../../../../store/Conversations/conversationThunk";
 
 const Conversations: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

@@ -8,6 +8,7 @@ export const VERSION = "/v1"
 export const USER_PROFILE_API = "/user/profile";
 export const USER_AUTH_API = "/user/auth";
 export const MESSAGE_API ="/messages"
+export const CHAT_API = "/chat"
 
 export const UsersData = [
   {

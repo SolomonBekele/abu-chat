@@ -1,14 +1,14 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 
-import type { Message } from "./messageSlice";
-import { BASE_URL, MESSAGE_API } from "../../utils/constants";
+import type { Message } from "./types";
+import { BASE_URL, CHAT_API, VERSION } from "../../utils/constants";
 
 export const fetchMessages = createAsyncThunk(
   "messages/fetchMessages",
-async (userId: number, { rejectWithValue }) => {
+async (conversationId: string, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BASE_URL}${MESSAGE_API}${userId}`, {
+      const response = await fetch(`${BASE_URL}${VERSION}${CHAT_API}/message/${conversationId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -21,8 +21,7 @@ async (userId: number, { rejectWithValue }) => {
       }
 
       const data: Message[] = await response.json();
-
-      return { userId, messages: data };
+      return { conversationId, data: data };
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
@@ -30,9 +29,9 @@ async (userId: number, { rejectWithValue }) => {
 
   // ----------- Prevent API call if already loaded -----------
   {
-    condition: (userId, { getState }) => {
+    condition: (conversationId, { getState }) => {
       const state = getState() as any;
-      const existing = state.messages.messages[userId];
+      const existing = state.messages.data[conversationId];
 
       if (existing && existing.length > 0) {
         console.log("Redux already has messages for this user → skip API call");

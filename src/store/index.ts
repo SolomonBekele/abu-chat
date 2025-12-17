@@ -2,12 +2,14 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import userReducer from "./Profile/userSlice";
 import conversationsReducer from "./Conversations/conversationSlice";
+import contactsReducer from "./Contacts/contactSlice";
 import messageReducer from "./Messages/messageSlice";
 
 
 import {
   userPersistConfig,
   conversationsPersistConfig,
+  contactsPersistConfig,
 
 } from "./persistConfig";
 
@@ -15,6 +17,7 @@ import {
 const rootReducer = combineReducers({
   user: persistReducer(userPersistConfig, userReducer),
   conversations: persistReducer(conversationsPersistConfig, conversationsReducer),
+  contact: persistReducer(contactsPersistConfig,contactsReducer),
   messages:  messageReducer,
 });
  

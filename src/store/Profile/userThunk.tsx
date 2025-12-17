@@ -53,7 +53,7 @@ export const signupUser = createAsyncThunk<SignupResponse, SignUpPayload>(
   }
 );
 
-export const updateUser = createAsyncThunk<userUpdateResponse, userUpdatePayload>(
+export const updateUserProfile = createAsyncThunk<userUpdateResponse, userUpdatePayload>(
   "user/update",
   async (payload, { rejectWithValue }) => {
     try {

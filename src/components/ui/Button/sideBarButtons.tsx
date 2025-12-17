@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { ChatIcon, CollapseIcon, ExpandIcon, LogoutIcon, SettingIcon } from "../icons/menuBarIcons";
+import { ChatIcon, CollapseIcon, ContactIcon, ExpandIcon, LogoutIcon, SettingIcon } from "../icons/menuBarIcons";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../store/Profile/userSlice";
 import { useAuthContext } from "../../../context/authContext";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { resetConversation } from "../../../store/Conversations/conversationSlice";
+import { resetContact } from "../../../store/Contacts/contactSlice";
 type CollapseButtonProps = {
   collapsed: boolean;
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
@@ -40,6 +42,16 @@ export const ChatButton: React.FC<ButtonProps> = ({ collapsed, active, onClick }
     </button>
   );
 };
+export const ContactButton: React.FC<ButtonProps> = ({ collapsed, active, onClick }) => {
+  return (
+    <button onClick={onClick} className ={`flex items-center gap-3 h-10 px-4 w-full hover:bg-gray-100 rounded-md transition-all
+    ${active && "bg-slate-200"}
+    `}>
+      <ContactIcon />
+      {!collapsed && <span>Contacts</span>}
+    </button>
+  );
+};
 
 export const SettingButton: React.FC<ButtonProps> = ({ collapsed, active, onClick }) => {
   return (
@@ -58,6 +70,8 @@ export const LogoutButton = ({ collapsed }:CollapseProps) => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     dispatch(logout());
+    dispatch(resetConversation());
+    dispatch(resetContact());
     setAuthUser(null)
     toast.success("logged out successfully");
   };

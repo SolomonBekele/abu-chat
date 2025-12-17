@@ -1,28 +1,18 @@
 // messageSlice.ts
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { fetchMessages } from "./messageApi";
+import { fetchMessages } from "./messageThunk";
+import type { Message, messagesState } from "./types";
 
 // Message Interface
-export interface Message {
-  id: number;
-  senderId: number;
-  receiverId: number;
-  seenBy: string[];
-  message: string;
-  createdAt: string;
-  updatedAt: string;
-}
 
-interface MessagesState {
-  messages: Record<string, Message[]>; 
-  loading: boolean;   // <-- BOOLEAN
-  error?: string;
-}
 
-const initialState: MessagesState = {
-  messages: {},
+const initialState: messagesState = {
+  success:false,
+  message:"",
+  data: {},
   loading: false,
+
 };
 
 const messagesSlice = createSlice({
@@ -31,13 +21,13 @@ const messagesSlice = createSlice({
   reducers: {
     addMessage: (
       state,
-      action: PayloadAction<{ userId: number; message: Message }>
+      action: PayloadAction<{ conversation_id: number; message: Message }>
     ) => {
-      const { userId, message } = action.payload;
-      if (!state.messages[userId]) {
-        state.messages[userId] = [];
+      const { conversation_id, message } = action.payload;
+      if (!state.data[conversation_id]) {
+        state.data[conversation_id] = [];
       }
-      state.messages[userId].push(message);
+      state.data[conversation_id].push(message);
     },
   },
 
@@ -46,15 +36,12 @@ const messagesSlice = createSlice({
       .addCase(fetchMessages.pending, (state) => {
         state.loading = true; // <-- boolean
       })
-      .addCase(
-        fetchMessages.fulfilled,
-        (
-          state,
-          action: PayloadAction<{ userId: string; messages: Message[] }>
+      .addCase(fetchMessages.fulfilled, ( state,action: PayloadAction<{ conversationId: string; messages: Message[] }>
         ) => {
           state.loading = false;
-          state.messages[action.payload.userId] =
-            action.payload.messages;
+          state.data[action.payload.conversationId] =action.payload.data.data;
+          state.message = action.payload.data.message
+          state.success = action.payload.data.success
         }
       )
       .addCase(fetchMessages.rejected, (state, action) => {
