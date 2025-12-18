@@ -3,7 +3,7 @@ import type { AppDispatch, RootState } from "../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserProfile } from "../../store/Profile/userThunk";
 import toast from "react-hot-toast";
-import { useAuthContext } from "../../context/authContext";
+import { useAuthContext } from "../../context/AuthContext";
 import { resetUpdate } from "../../store/Profile/userSlice";
 
 const UpdateProfileForm = () => {

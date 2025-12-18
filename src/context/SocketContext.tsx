@@ -1,0 +1,103 @@
+import { createContext, useEffect, useState, useContext, ReactNode } from "react";
+import { useDispatch } from "react-redux";
+import { useAuthContext } from "./AuthContext";
+import { io, Socket } from "socket.io-client";
+import { handleNewMessage } from "../hooks/useListenMessages";
+
+interface SocketContextType {
+  socket: Socket | null;
+  onlineUsers: string[];
+  emitTypingStart: (receiverId: string, conversationId: string) => void;
+  emitTypingStop: (receiverId: string, conversationId: string) => void;
+  emitMessageSeen: (messageId: string, receiverId: string) => void;
+}
+
+const SocketContext = createContext<SocketContextType | undefined>(undefined);
+
+export const useSocketContext = (): SocketContextType => {
+  const context = useContext(SocketContext);
+  if (!context) {
+    throw new Error("useSocketContext must be used within a SocketContextProvider");
+  }
+  return context;
+};
+
+interface SocketContextProviderProps {
+  children: ReactNode;
+}
+
+export const SocketContextProvider: React.FC<SocketContextProviderProps> = ({ children }) => {
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
+  const { authUser } = useAuthContext();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (authUser) {
+      const socketInstance: Socket = io("http://localhost:3002", {
+        auth: {
+          token: localStorage.getItem("user-token"),
+        },
+        autoConnect: true,
+        reconnection: true,
+      });
+
+      setSocket(socketInstance);
+
+      // Online users
+      socketInstance.on("getOnlineUsers", (users: string[]) => {
+        setOnlineUsers(users);
+      });
+
+      // Typing indicator
+      socketInstance.on("typing:start", ({ from, conversationId }) => {
+        console.log(`User ${from} is typing in conversation ${conversationId}`);
+      });
+      socketInstance.on("typing:stop", ({ from, conversationId }) => {
+        console.log(`User ${from} stopped typing in conversation ${conversationId}`);
+      });
+
+      // Message seen indicator
+      socketInstance.on("message:seen", ({ messageId, seenBy }) => {
+        console.log(`Message ${messageId} seen by ${seenBy}`);
+      });
+      socketInstance.on("newMessage", (payload, callback) => {
+          handleNewMessage(payload, dispatch, (ack) => console.log(ack));
+      });
+
+      return () => {
+        socketInstance.disconnect();
+        setSocket(null);
+      };
+    } else {
+      if (socket) {
+        console.log("Closing socket due to no authUser");
+        socket.disconnect();
+        setSocket(null);
+      }
+    }
+  }, [authUser]);
+
+  // Functions to emit events
+  const emitTypingStart = (receiverId: string, conversationId: string) => {
+    socket?.emit("typing:start", { receiverId, conversationId });
+  };
+
+  const emitTypingStop = (receiverId: string, conversationId: string) => {
+    socket?.emit("typing:stop", { receiverId, conversationId });
+  };
+
+  const emitMessageSeen = (messageId: string, receiverId: string) => {
+    socket?.emit("message:seen", { messageId, receiverId });
+  };
+
+  
+
+  return (
+    <SocketContext.Provider
+      value={{ socket, onlineUsers, emitTypingStart, emitTypingStop, emitMessageSeen }}
+    >
+      {children}
+    </SocketContext.Provider>
+  );
+};

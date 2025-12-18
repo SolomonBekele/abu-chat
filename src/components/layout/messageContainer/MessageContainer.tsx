@@ -3,43 +3,39 @@ import React, { useEffect } from 'react'
 import MessageInput from './MessageInput'
 import { TiMessages } from "react-icons/ti";
 // import useConversation from '../../zustand/useConversation';
-import { useAuthContext } from '../../../context/authContext';
+import { useAuthContext } from '../../../context/AuthContext';
 import MessageHeader from './MessageHeader';
 import Messages from './Messages';
 import type { RootState } from "../../../store";
 import { useSelector } from "react-redux";
 
 const MessageContainer = () => {
-   const { selectedConversation } = useSelector(
+  const { selectedConversation } = useSelector(
     (state: RootState) => state.conversations
   );
 
-
-    // useEffect(()=>{
-    //     // clean function (unmounts)
-    //     return()=>setSelectedConversation(null);
-    // },[setSelectedConversation]); 
-
   return (
-    <div className="flex flex-col w-full relative bg-gray-50">
-       { selectedConversation === null ?(
-            <NoChatSelected/> 
-        ):
-        (
+    <div className="flex flex-col w-full h-full bg-gray-50"> {/* h-full added */}
+      {selectedConversation === null ? (
+        <NoChatSelected />
+      ) : (
+        <div className="flex flex-col flex-1 overflow-hidden"> {/* flex-1 + overflow-hidden */}
+          {/* Header */}
+          <MessageHeader />
 
-        <div className=''> 
-        {/* header */}
-    <MessageHeader/>
-    <Messages conversationId={selectedConversation?.conversationInfo?._id}/>
-    
-  
-    {/* <Messages/> */}
-    <MessageInput/>
-    </div>
-        )}
+          {/* Messages */}
+          <div className="flex-1 overflow-auto">
+            <Messages conversationId={selectedConversation?.conversationInfo?._id} />
+          </div>
+
+          {/* Input */}
+          <MessageInput />
         </div>
-        )
-    }
+      )}
+    </div>
+  );
+};
+
 
 
 export default MessageContainer

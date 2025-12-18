@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { ChatIcon, CollapseIcon, ContactIcon, ExpandIcon, LogoutIcon, SettingIcon } from "../icons/menuBarIcons";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../store/Profile/userSlice";
-import { useAuthContext } from "../../../context/authContext";
+import { useAuthContext } from "../../../context/AuthContext";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { resetConversation } from "../../../store/Conversations/conversationSlice";

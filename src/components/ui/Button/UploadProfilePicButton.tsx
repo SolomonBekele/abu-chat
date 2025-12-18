@@ -3,7 +3,7 @@ import { CameraIcon } from "../icons/sideBarIcons";
 import type { AppDispatch, RootState } from "../../../store";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfilePic, updateUserProfile } from "../../../store/Profile/userThunk";
-import { useAuthContext } from "../../../context/authContext";
+import { useAuthContext } from "../../../context/AuthContext";
 
 const UploadProfilePicButton = () => {
     const fileInputRef = useRef<HTMLInputElement | null>(null);
