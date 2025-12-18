@@ -9,10 +9,10 @@ import { fetchConversations } from "../../../../store/Conversations/conversation
 const Conversations: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { conversations, status, error, selectedConversation } = useSelector(
+  const { data, status, error, selectedConversation } = useSelector(
     (state: RootState) => state.conversations
   );
-
+  
   const activeId = selectedConversation?.id ?? null;
 
   useEffect(() => {
@@ -37,13 +37,15 @@ const Conversations: React.FC = () => {
           ) : status === "failed" ? (
             <p className="text-red-500">{error}</p>
           ) : (
-            conversations.map((conversation) => (
-              <Conversation
-                key={conversation.id}
-                {...conversation}
-                isActive={activeId === conversation.id}
-              />
-            ))
+            Object.entries(data).map(([id, conversation]) => {
+              return (
+                <Conversation
+                  key={id}
+                  {...conversation}
+                  isActive={activeId === id}
+                />
+              );
+            })
           )}
         </div>
       </div>

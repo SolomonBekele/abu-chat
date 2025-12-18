@@ -19,8 +19,8 @@ async (conversationId: string, { rejectWithValue }) => {
       if (!response.ok) {
         return rejectWithValue("Failed to fetch messages");
       }
-
-      const data: Message[] = await response.json();
+      const res = await response.json()
+      const data: Message[] = res.data;
       return { conversationId, data: data };
     } catch (error: any) {
       return rejectWithValue(error.message);

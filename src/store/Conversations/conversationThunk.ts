@@ -1,10 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import type { Conversations } from "./types";
+import type { ConversationsRespponse } from "./types";
 import { BASE_URL, CHAT_API, VERSION } from "../../utils/constants";
 
 
 // Fetch all conversations
-export const fetchConversations = createAsyncThunk<Conversations[]>(
+export const fetchConversations = createAsyncThunk<ConversationsRespponse>(
   "conversationsList/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
@@ -20,7 +20,7 @@ export const fetchConversations = createAsyncThunk<Conversations[]>(
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to fetch conversations");
       }
-      const data: Conversations[] = await response.json();
+      const data: ConversationsRespponse = await response.json();
       return data;
     } catch (err: any) {
       return rejectWithValue(err.message);

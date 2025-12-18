@@ -1,8 +1,14 @@
 // Root response
 
+export interface ConversationsRespponse{
+  success:string;
+  message:string;
+  data:Conversation[]
+}
+
 
 // Participant (one row in chat list)
-export interface Conversations {
+export interface Conversation {
   id: string;
   role: "member" | "admin";
   joined_at: string;
@@ -37,10 +43,11 @@ export interface PeerUser {
 
 
 export interface ConversationsState {
-  conversations: Conversations[];
+  data: Record<string,Conversation>;
   status: "idle" | "loading" | "failed";
   success: boolean;
-  selectedConversation: Conversations | null;
+  selectedConversation: Conversation | null;
   error?: string;
 }
+
 

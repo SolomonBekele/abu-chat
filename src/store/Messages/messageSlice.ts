@@ -2,7 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { fetchMessages } from "./messageThunk";
-import type { Message, messagesState } from "./types";
+import type { Message, MessagesRespponse, messagesState } from "./types";
 
 // Message Interface
 
@@ -19,14 +19,9 @@ const messagesSlice = createSlice({
   name: "messages",
   initialState,
   reducers: {
-    addMessage: (state,action: PayloadAction<{ conversation_id: string; message: Message }>) => {
-      const { conversation_id, message } = action.payload;
-      console.log(conversation_id,message);
-      // if (!state.data[conversation_id]) {
-      //   state.data[conversation_id] = [];
-      // }
-      state.data[conversation_id].push(message);
-      console.log("mesage added");
+    addMessage: (state,action: PayloadAction<{ conversationId: string; message: Message }>) => {
+      const { conversationId, message } = action.payload;
+      state.data[conversationId].push(message);
     },
     resetMessages(state) {
           state.data = {};
@@ -41,10 +36,11 @@ const messagesSlice = createSlice({
       .addCase(fetchMessages.pending, (state) => {
         state.loading = true; // <-- boolean
       })
-      .addCase(fetchMessages.fulfilled, ( state,action: PayloadAction<{ conversationId: string; messages: Message[] }>
+      .addCase(fetchMessages.fulfilled, ( state,action: PayloadAction<MessagesRespponse>
         ) => {
+      
           state.loading = false;
-          state.data[action.payload.conversationId] =action.payload.data.data;
+          state.data[action.payload.conversationId] = action.payload.data
           state.message = action.payload.data.message
           state.success = action.payload.data.success
         }
