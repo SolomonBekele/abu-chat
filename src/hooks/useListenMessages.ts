@@ -4,6 +4,8 @@ import notificationSound from "../assets/sounds/notification.mp3";
 import { useDispatch } from 'react-redux';
 import { addMessage } from '../store/Messages/messageSlice';
 import type { Dispatch } from "redux";
+import { updateConversation } from '../store/Conversations/conversationSlice';
+import { formatLastSeen } from '../utils/formatTime';
 
 export interface MessageType {
   _id: string;
@@ -71,7 +73,6 @@ export default useListenMessages;
 export const handleNewMessage = (
   payload: NewMessagePayload,
   dispatch: Dispatch,
-  callback?: (ack: string) => void
 ) => {
 
   const { conversationId, message } = payload;
@@ -80,15 +81,21 @@ export const handleNewMessage = (
     return;
   }
 
-  // Keep conversation_id as number if your store expects number
-  const conversation_id = conversationId;
 
   // Dispatch to Redux
-  dispatch(addMessage({ conversation_id, message }));
+  dispatch(addMessage({ conversationId, message }));
+  const updateConversationProps={
+    conversationId,
+    content: message.content ,
+    lastMessageTime: formatLastSeen(message.sent_at)
+    ,type:message.type
+  }
+  dispatch(updateConversation(updateConversationProps))
+
 
   // Play notification sound
 //   const sound = new Audio(notificationSound);
 //   sound.play();
 
-  if (callback) callback("Received successfully");
+//   if (callback) callback("Received successfully");
 };

@@ -116,7 +116,7 @@ const sendMessage = async (conversationId:string | undefined,receiverId:string |
           if(data.success){
             const conversationId = data.conversationId;
             const message = data.message;
-              handleNewMessage({conversationId,message},dispatch,(ack) => console.log(ack))
+              handleNewMessage({conversationId,message},dispatch)
           }
         
     

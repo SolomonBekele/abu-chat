@@ -62,7 +62,7 @@ export const SocketContextProvider: React.FC<SocketContextProviderProps> = ({ ch
         console.log(`Message ${messageId} seen by ${seenBy}`);
       });
       socketInstance.on("newMessage", (payload, callback) => {
-          handleNewMessage(payload, dispatch, (ack) => console.log(ack));
+          handleNewMessage(payload, dispatch);
       });
 
       return () => {

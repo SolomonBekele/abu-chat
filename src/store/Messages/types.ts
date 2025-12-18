@@ -1,3 +1,9 @@
+export interface FetchMessagesResponse{
+  success:string;
+  message:string;
+  data:Message[];
+}
+
 export interface Message {
   _id: string;
   conversation_id: string;

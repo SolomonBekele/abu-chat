@@ -1,10 +1,10 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { fetchConversations} from "./conversationThunk";
-import type { Conversations, ConversationsState } from "./types";
+import type { Conversation, ConversationsState,ConversationsRespponse } from "./types";
 
 
 const initialState: ConversationsState = {
-  conversations: [],
+  data: {},
   status: "idle",
   success: false,
   selectedConversation:  null,
@@ -14,23 +14,32 @@ const conversationsSlice = createSlice({
   name: "conversationsList",
   initialState,
   reducers: {
-    setSelectedConversation: (state, action: PayloadAction<Conversations>) => {
+    setSelectedConversation: (state, action: PayloadAction<Conversation>) => {
       state.selectedConversation = action.payload;
     },
     resetConversation(state) {
-          state.conversations = [];
+          state.data = {};
           state.status = "idle";
           state.selectedConversation = null
+    },
+    updateConversation: (state,action: PayloadAction<{ conversationId: string; content: string ,lastMessageTime:string,type:"text" | "image" | "video" | "file" | null}>) => {
+          const { conversationId, content,type,lastMessageTime } = action.payload;
+          state.data[conversationId].conversationInfo.lastMessage=content;
+          state.data[conversationId].conversationInfo.lastMessageType= type ;
+          state.data[conversationId].conversationInfo.lastMessageTime= lastMessageTime 
         },
+      
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchConversations.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchConversations.fulfilled, (state, action: PayloadAction<Conversations[]>) => {
+      .addCase(fetchConversations.fulfilled, (state, action: PayloadAction<ConversationsRespponse>) => {
         state.status = "idle";
-        state.conversations = action.payload.data;
+        for(const data of action.payload.data){
+            state.data[data.conversationInfo._id] = data;
+        }
       })
       .addCase(fetchConversations.rejected, (state, action) => {
         state.status = "failed";
@@ -39,5 +48,5 @@ const conversationsSlice = createSlice({
   },
 });
 
-export const { setSelectedConversation,resetConversation } = conversationsSlice.actions;
+export const { setSelectedConversation,resetConversation,updateConversation } = conversationsSlice.actions;
 export default conversationsSlice.reducer;
