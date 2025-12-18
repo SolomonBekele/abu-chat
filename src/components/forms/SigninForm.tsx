@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../store/Profile/userThunk";
 import type { AppDispatch, RootState } from "../../store";
-import { useAuthContext } from "../../context/authContext";
+import { useAuthContext } from "../../context/AuthContext";
 import { ChatIcon2 } from "../ui/icons/chatAppIcon";
 import { SignInButton } from "../ui/Button/signinButton";
 

@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import { useSelector } from 'react-redux';
+import type { Dispatch } from "react";
+import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from "../../../store";
 import { BASE_URL, CHAT_API, MESSAGE_API, VERSION } from "../../../utils/constants";
+import { handleNewMessage } from "../../../hooks/useListenMessages";
+
 
 interface MessageInputProps {
   onSend?: (message: string) => void;
@@ -13,18 +16,19 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend }) => {
  const conversationId = selectedConversation?.conversationInfo?._id;
  const receiverId = selectedConversation?.peerUser?.user_id;
  const type = "text";
+ const dispatch = useDispatch()
 
 
 
   const handleSend = () => {
-    sendMessage(conversationId,receiverId,message,type);
+    sendMessage(conversationId,receiverId,message,type,dispatch);
     if (!message.trim()) return;
     onSend?.(message);
     setMessage("");
   };
 
   return (
-    <div className="bg-white border-t border-gray-200 p-4 absolute bottom-0 w-full">
+    <div className="bg-white border-t border-gray-200 p-4 bottom-0 w-full">
       <div className="space-y-2">
         <div className="flex items-center gap-1 md:gap-2">
           {/* TEXTAREA */}
@@ -95,11 +99,11 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend }) => {
 };
 
 export default MessageInput;
-const sendMessage = async (conversationId:string | undefined,receiverId:string | undefined ,content:string,type:string|undefined) => {
+const sendMessage = async (conversationId:string | undefined,receiverId:string | undefined ,content:string,type:string|undefined,dispatch:Dispatch) => {
         try {
           const token = localStorage.getItem("user-token");
     
-        await fetch(`${BASE_URL}${VERSION}${CHAT_API}/message`, {
+        const res =await fetch(`${BASE_URL}${VERSION}${CHAT_API}/message`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -108,6 +112,13 @@ const sendMessage = async (conversationId:string | undefined,receiverId:string |
             body:JSON.stringify({conversationId:conversationId,receiverId:receiverId,content:content,type:type})
             }
           );
+          const data = await res.json()
+          if(data.success){
+            const conversationId = data.conversationId;
+            const message = data.message;
+              handleNewMessage({conversationId,message},dispatch,(ack) => console.log(ack))
+          }
+        
     
         } catch (error) {
           console.error("Error sending message:", error);

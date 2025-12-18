@@ -7,7 +7,8 @@ import { Provider } from "react-redux";
 import {persistor, store}from "./store/index.ts";
 
 import { PersistGate } from "redux-persist/integration/react";
-import { AuthContextProvider } from "./context/authContext.tsx";
+import { AuthContextProvider } from "./context/AuthContext.tsx";
+import { SocketContextProvider } from "./context/SocketContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
@@ -15,7 +16,9 @@ createRoot(document.getElementById("root")!).render(
       <BrowserRouter>
         {/* <StrictMode> */}
           <AuthContextProvider>
+            <SocketContextProvider>
             <App />
+            </SocketContextProvider>
           </AuthContextProvider>
         {/* </StrictMode> */}
       </BrowserRouter>
