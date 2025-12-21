@@ -1,7 +1,9 @@
 import React from "react";
 import { useAuthContext } from "../../../context/AuthContext";
-import { extractTime } from "../../../utils/extractTime";
+
 import { FaCheck, FaCheckDouble } from "react-icons/fa"; // react-icons for status
+import { useSocketContext } from "../../../context/SocketContext";
+import { extractTime } from "../../../utils/formatTime";
 
 interface MessagesProps {
   _id: string;
@@ -33,7 +35,7 @@ const Message = ({
   __v,
 }: MessagesProps) => {
   const { authUser } = useAuthContext();
-
+  
   const fromMe = sender_id === authUser.id;
   const formattedTime = extractTime(sent_at);
 

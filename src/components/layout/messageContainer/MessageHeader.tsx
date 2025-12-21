@@ -1,11 +1,22 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import type { RootState } from "../../../store";
+import { useSocketContext } from '../../../context/SocketContext';
+import { formatLastSeen } from '../../../utils/formatTime';
 
 const MessageHeader: React.FC = () => {
+  const {onlineUsers} = useSocketContext();
   const {selectedConversation} = useSelector(
       (state: RootState) => state.conversations
     );
+const peerUser = selectedConversation?.peerUser;
+
+const onlineOrLastSeen = peerUser?.user_id && onlineUsers.includes(peerUser.user_id)
+  ? "Online"
+  : peerUser?.lastSeen
+    ? `Last seen at ${formatLastSeen(new Date(peerUser.lastSeen))}`
+    : "Offline";
+const onlineColor = onlineOrLastSeen==="Online" ? "text-teal-500": "text-gray-500"  ;
   return (
     <div className="h-16 bg-white border-b border-gray-200 px-4 md:px-6 flex items-center justify-between">
       <div className="flex items-center gap-3">
@@ -22,7 +33,7 @@ const MessageHeader: React.FC = () => {
         </span>
         <div>
           <h3 className="text-gray-900">{selectedConversation?.peerUser.name}</h3>
-          <p className="text-sm text-gray-500">online</p>
+          <p className={`text-sm ${onlineColor}`}>{onlineOrLastSeen }</p>
         </div>
       </div>
 

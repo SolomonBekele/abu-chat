@@ -16,7 +16,7 @@ const AccountSetting: React.FC = () => {
 
   const fetchProfilePic = async () => {
     try {
-      const res = await fetch(`${BASE_URL}${VERSION}${USER_PROFILE_API}/profile/pic`, {
+      const res = await fetch(`${BASE_URL}${VERSION}${USER_PROFILE_API}/profile/pic/${userData?.id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("user-token")}`,
         },

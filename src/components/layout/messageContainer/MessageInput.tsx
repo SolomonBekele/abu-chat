@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from "../../../store";
 import { BASE_URL, CHAT_API, MESSAGE_API, VERSION } from "../../../utils/constants";
 import { handleNewMessage } from "../../../hooks/useListenMessages";
+import { useSocketContext } from "../../../context/SocketContext";
+import { data } from "react-router-dom";
 
 
 interface MessageInputProps {
@@ -17,10 +19,14 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend }) => {
  const receiverId = selectedConversation?.peerUser?.user_id;
  const type = "text";
  const dispatch = useDispatch()
+ const {emitMessageSend} = useSocketContext()
 
 
 
   const handleSend = () => {
+    const content = message;
+    const data ={ conversationId,receiverId,content,type}
+    // emitMessageSend(data);
     sendMessage(conversationId,receiverId,message,type,dispatch);
     if (!message.trim()) return;
     onSend?.(message);
@@ -100,6 +106,35 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend }) => {
 
 export default MessageInput;
 const sendMessage = async (conversationId:string | undefined,receiverId:string | undefined ,content:string,type:string|undefined,dispatch:Dispatch) => {
+        try {
+          const token = localStorage.getItem("user-token");
+    
+        const res =await fetch(`${BASE_URL}${VERSION}${CHAT_API}/message`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              ...(token && { Authorization: `Bearer ${token}` }),
+            },
+            body:JSON.stringify({conversationId:conversationId,receiverId:receiverId,content:content,type:type})
+            }
+          );
+          const data = await res.json()
+          if(data.success){
+            const conversationId = data.conversationId;
+            const message = data.message;
+              handleNewMessage({conversationId,message},dispatch)
+          }
+        
+    
+        } catch (error) {
+          console.error("Error sending message:", error);
+        }
+
+      };
+const sendMessageSocket = async (conversationId:string | undefined,receiverId:string | undefined ,content:string,type:string|undefined,dispatch:Dispatch) => {
+        
+        socket.emit("message:send", data);
+  
         try {
           const token = localStorage.getItem("user-token");
     

@@ -3,6 +3,14 @@ import { useDispatch } from "react-redux";
 import { useAuthContext } from "./AuthContext";
 import { io, Socket } from "socket.io-client";
 import { handleNewMessage } from "../hooks/useListenMessages";
+import { data } from "react-router-dom";
+
+interface MessageDataType{
+  conversationId : string | undefined;
+  receiverId:string | undefined;
+  content:string | undefined;
+  type:string | undefined;
+}
 
 interface SocketContextType {
   socket: Socket | null;
@@ -10,6 +18,7 @@ interface SocketContextType {
   emitTypingStart: (receiverId: string, conversationId: string) => void;
   emitTypingStop: (receiverId: string, conversationId: string) => void;
   emitMessageSeen: (messageId: string, receiverId: string) => void;
+  emitMessageSend: (messageData:MessageDataType) =>void;
 }
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
@@ -61,7 +70,7 @@ export const SocketContextProvider: React.FC<SocketContextProviderProps> = ({ ch
       socketInstance.on("message:seen", ({ messageId, seenBy }) => {
         console.log(`Message ${messageId} seen by ${seenBy}`);
       });
-      socketInstance.on("newMessage", (payload, callback) => {
+      socketInstance.on("message:new", (payload, callback) => {
           handleNewMessage(payload, dispatch);
       });
 
@@ -90,12 +99,13 @@ export const SocketContextProvider: React.FC<SocketContextProviderProps> = ({ ch
   const emitMessageSeen = (messageId: string, receiverId: string) => {
     socket?.emit("message:seen", { messageId, receiverId });
   };
-
-  
+  const emitMessageSend = (messageData:MessageDataType)=>{
+    socket?.emit("message:send",{messageData})
+  }
 
   return (
     <SocketContext.Provider
-      value={{ socket, onlineUsers, emitTypingStart, emitTypingStop, emitMessageSeen }}
+      value={{ socket, onlineUsers, emitMessageSend,emitTypingStart, emitTypingStop, emitMessageSeen }}
     >
       {children}
     </SocketContext.Provider>
