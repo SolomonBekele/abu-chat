@@ -21,7 +21,7 @@ const messagesSlice = createSlice({
   reducers: {
     addMessage: (state,action: PayloadAction<{ conversationId: string; message: Message }>) => {
       const { conversationId, message } = action.payload;
-      state.data[conversationId].push(message);
+      state.data[conversationId]?.push(message);
     },
     resetMessages(state) {
           state.data = {};

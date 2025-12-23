@@ -26,7 +26,7 @@ export interface ConversationInfo {
   updated_at: string;
   lastMessage: string | null;
   lastMessageType: "text" | "image" | "video" | "file" | null;
-  lastMessageTime: string;
+  lastMessageTime: Date;
 }
 
 // Peer user (for one-to-one chats)

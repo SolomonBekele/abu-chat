@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import type { Dispatch } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from "../../../store";
-import { BASE_URL, CHAT_API, MESSAGE_API, VERSION } from "../../../utils/constants";
-import { handleNewMessage } from "../../../hooks/useListenMessages";
+import { BASE_URL, CHAT_API, VERSION } from "../../../utils/constants";
+import { handleNewMessage } from "../../../hooks/useListenNewMessages";
 import { useSocketContext } from "../../../context/SocketContext";
 import { data } from "react-router-dom";
 
@@ -18,7 +18,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend }) => {
  const conversationId = selectedConversation?.conversationInfo?._id;
  const receiverId = selectedConversation?.peerUser?.user_id;
  const type = "text";
- const dispatch = useDispatch()
  const {emitMessageSend} = useSocketContext()
 
 
@@ -26,8 +25,8 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend }) => {
   const handleSend = () => {
     const content = message;
     const data ={ conversationId,receiverId,content,type}
-    // emitMessageSend(data);
-    sendMessage(conversationId,receiverId,message,type,dispatch);
+    emitMessageSend(data);
+    // sendMessage(conversationId,receiverId,message,type,dispatch);
     if (!message.trim()) return;
     onSend?.(message);
     setMessage("");

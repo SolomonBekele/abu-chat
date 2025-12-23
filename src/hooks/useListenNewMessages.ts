@@ -5,7 +5,6 @@ import { useDispatch } from 'react-redux';
 import { addMessage } from '../store/Messages/messageSlice';
 import type { Dispatch } from "redux";
 import { updateConversation } from '../store/Conversations/conversationSlice';
-import { formatLastSeen } from '../utils/formatTime';
 
 export interface MessageType {
   _id: string;
@@ -28,46 +27,42 @@ interface NewMessagePayload {
   message: MessageType;
 }
 
-const useListenMessages = () => {
+const useListenNewMessages = () => {
   const { socket } = useSocketContext();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (!socket) return; // wait until socket is connected
+ useEffect(() => {
+  if (!socket) return;
 
-    console.log("Listening for newMessage events...");
+  const handleNewMessage = (payload: NewMessagePayload) => {
+    console.log("Received message:new:", payload);
 
-    const handleNewMessage = (payload: NewMessagePayload, callback?: (ack: string) => void) => {
-      console.log("Received newMessage payload:", payload);
+    const { conversationId, message } = payload;
+    if (!conversationId || !message) return;
 
-      const { conversationId, message } = payload;
-      if (!conversationId || !message) {
-        console.warn("Invalid payload:", payload);
-        return;
-      }
+    dispatch(addMessage({ conversationId, message }));
+    const updateConversationProps={
+    conversationId,
+    content: message.content ,
+    lastMessageTime: new Date(message.sent_at)
+    ,type:message.type
+  }
+  dispatch(updateConversation(updateConversationProps))
 
-      // Keep conversation_id as string
-      const conversation_id = Number(conversationId)
+    // const sound = new Audio(notificationSound);
+    // sound.play();
+  };
 
-      // Dispatch to Redux
-      dispatch(addMessage({ conversation_id, message }));
+  socket.on("message:new", handleNewMessage);
 
-      // Play notification sound
-      const sound = new Audio(notificationSound);
-      sound.play();
+  return () => {
+    socket.off("message:new", handleNewMessage);
+  };
+}, [socket, dispatch]);
 
-      if (callback) callback("Received successfully");
-    };
-
-    socket.on("newMessage", handleNewMessage);
-
-    return () => {
-      socket.off("newMessage", handleNewMessage);
-    };
-  }, [socket, dispatch]);
 };
 
-export default useListenMessages;
+export default useListenNewMessages;
 
 
 export const handleNewMessage = (
@@ -87,15 +82,9 @@ export const handleNewMessage = (
   const updateConversationProps={
     conversationId,
     content: message.content ,
-    lastMessageTime: formatLastSeen(message.sent_at)
-    ,type:message.type
+    lastMessageTime: new Date(message.sent_at),
+    type:message.type
   }
   dispatch(updateConversation(updateConversationProps))
 
-
-  // Play notification sound
-//   const sound = new Audio(notificationSound);
-//   sound.play();
-
-//   if (callback) callback("Received successfully");
 };
