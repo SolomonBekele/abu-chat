@@ -22,7 +22,7 @@ const conversationsSlice = createSlice({
           state.status = "idle";
           state.selectedConversation = null
     },
-    updateConversation: (state,action: PayloadAction<{ conversationId: string; content: string ,lastMessageTime:string,type:"text" | "image" | "video" | "file" | null}>) => {
+    updateConversation: (state,action: PayloadAction<{ conversationId: string; content: string ,lastMessageTime:Date,type:"text" | "image" | "video" | "file" | null}>) => {
           const { conversationId, content,type,lastMessageTime } = action.payload;
           state.data[conversationId].conversationInfo.lastMessage=content;
           state.data[conversationId].conversationInfo.lastMessageType= type ;

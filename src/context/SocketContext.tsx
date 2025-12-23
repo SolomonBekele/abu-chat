@@ -2,7 +2,7 @@ import { createContext, useEffect, useState, useContext, ReactNode } from "react
 import { useDispatch } from "react-redux";
 import { useAuthContext } from "./AuthContext";
 import { io, Socket } from "socket.io-client";
-import { handleNewMessage } from "../hooks/useListenMessages";
+import { handleNewMessage } from "../hooks/useListenNewMessages";
 import { data } from "react-router-dom";
 
 interface MessageDataType{
@@ -70,9 +70,12 @@ export const SocketContextProvider: React.FC<SocketContextProviderProps> = ({ ch
       socketInstance.on("message:seen", ({ messageId, seenBy }) => {
         console.log(`Message ${messageId} seen by ${seenBy}`);
       });
-      socketInstance.on("message:new", (payload, callback) => {
-          handleNewMessage(payload, dispatch);
-      });
+      // socketInstance.on("message:new", (payload, callback) => {
+      //     handleNewMessage(payload, dispatch);
+      // });
+      // socketInstance.on("message:send_success", (payload, callback) => {
+      //     handleNewMessage(payload, dispatch);
+      // });
 
       return () => {
         socketInstance.disconnect();

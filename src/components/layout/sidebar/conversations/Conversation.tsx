@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../../../store";
 import { fetchMessages } from "../../../../store/Messages/messageThunk";
 import { setSelectedConversation } from "../../../../store/Conversations/conversationSlice";
+import { formatTimeAgo } from "../../../../utils/formatTime";
 
 export interface ConversationProps {
   id: string;
@@ -22,7 +23,7 @@ export interface ConversationInfo {
   updated_at: string;
   lastMessage: string | null;
   lastMessageType: "text" | "image" | "video" | "file" | null;
-  lastMessageTime: string;
+  lastMessageTime: Date;
 }
 
 // Peer user (for one-to-one chats)
@@ -82,7 +83,7 @@ export const Conversation = ({
         {/* Name + time */}
         <div className="flex items-center justify-between mb-1">
           <span className="text-gray-900 truncate">{peerUser.name}</span>
-          <span className="text-xs text-gray-500">{conversationInfo.lastMessageTime}</span>
+          <span className="text-xs text-gray-500">{formatTimeAgo(conversationInfo.lastMessageTime)}</span>
         </div>
 
         {/* Message + unread badge */}
